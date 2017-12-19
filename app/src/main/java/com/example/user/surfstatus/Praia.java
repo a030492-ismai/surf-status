@@ -9,6 +9,7 @@ public class Praia {
     protected int praiaId;
     protected String nomePraia;
     protected String condicaoActual;
+    protected String urlPraia;
 
     public Praia(int id) {
         praiaId = id;
@@ -30,5 +31,11 @@ public class Praia {
     }
     public void setCondicaoActual(String s) {
         condicaoActual = s;
+    }
+    public void setUrlPraia(String s){
+        urlPraia = s;
+    }
+    public String getUrlPraia(){
+        return urlPraia;
     }
 }
