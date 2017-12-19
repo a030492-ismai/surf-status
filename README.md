@@ -4,9 +4,10 @@ SurfStatus
 ## Objectivo
 Aplicacao Android para, numa unica vista, ver o estado de varias praias a partir de varios urls diferentes:
 
-* [http://beachcam.sapo.pt/reports/praia-do-moledo/]
+* [http://beachcam.meo.pt/reports/praia-do-moledo/]
 * [http://beachcam.meo.pt/reports/praia-da-mariana/]
-* [lista completa](http://beachcam.meo.pt/reports/)
+* [lista completa](http://beachcam.meo.pt/reports/) ![meo beachcam](http://beachcam.meo.pt/images/2016/menu/meo_beachcam.png)
+
 
 
 
