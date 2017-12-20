@@ -17,11 +17,14 @@ public class MainActivity extends Activity {
 
     Button botao;
     TextView text;
+    TextView text2;
+    TextView[] texts = new TextView[2];
 
     String[] condicoesPraias;
 
     Praia praiaTeste = new Praia(1);
     Praia praiaTeste2 = new Praia(2);
+    Praia[] praias;
 
 
 
@@ -35,11 +38,18 @@ public class MainActivity extends Activity {
         praiaTeste2.setNomePraia("praia de teste 2");
         praiaTeste2.setUrlPraia("http://beachcam.meo.pt/reports/praia-da-mariana/");
 
+        praias = new Praia[2];
+        praias[0] = praiaTeste;
+        praias[1] = praiaTeste2;
+
 
         botao = findViewById(R.id.button);
         text = findViewById(R.id.textView);
+        text2 = findViewById(R.id.textView2);
         condicoesPraias = new String[0];
 
+        texts[0] = text;
+        texts[1] = text2;
 
 
         botao.setOnClickListener(new View.OnClickListener() {
@@ -56,21 +66,22 @@ public class MainActivity extends Activity {
 
     protected void getBeachReportAll(){
 
-        for(int i = 0; i < 1; ++i) {
-            new AsyncT().execute(praiaTeste.getUrlPraia());
+        for(int i = 0; i < 2; ++i) {
+            texts[i].setText("a carregar...");
+            new AsyncT().execute(praias[i].getUrlPraia(), ""+praias[i].getId());
         }
 
     }
 
-    public class AsyncT extends AsyncTask<String, Long , String> {
+    public class AsyncT extends AsyncTask<String, Long , String[]> {
 
         @Override
         protected void onPreExecute() {
-            text.setText("a carregar...");
+//            text.setText("a carregar...");
         }
 
         @Override
-        protected String doInBackground(String... s) {
+        protected String[] doInBackground(String... s) {
             //return Comunicar.contactar2("beachcam.sapo.pt", "/reports/praia-do-moledo/", 80);
             Document doc;
             String condicao = null;
@@ -80,8 +91,9 @@ public class MainActivity extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            s[0] = condicao;
 
-            return condicao;
+            return s;
         }
 
         @Override
@@ -90,9 +102,8 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(String finalString) {
-
-            text.setText(finalString);
+        protected void onPostExecute(String[] finalString) {
+            texts[Integer.parseInt(finalString[1]) - 1].setText(finalString[0]);
 
         }
     }
