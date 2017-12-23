@@ -1,5 +1,6 @@
 package com.example.user.surfstatus;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,8 +11,11 @@ import android.widget.TextView;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -20,11 +24,14 @@ public class MainActivity extends Activity {
     TextView text2;
     TextView[] texts = new TextView[2];
 
-    String[] condicoesPraias;
-
-    Praia praiaTeste = new Praia(1);
-    Praia praiaTeste2 = new Praia(2);
-    Praia[] praias;
+//    String[] condicoesPraias;
+//
+//    Praia praiaTeste = new Praia(1);
+//    Praia praiaTeste2 = new Praia(2);
+//    Praia[] praias;
+    List<Praia> listaPraias = new ArrayList<>();
+    String urlListaPraias = "http://beachcam.meo.pt/reports/";
+    Document doc;
 
 
 
@@ -33,20 +40,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        praiaTeste.setNomePraia("praia de teste");
-        praiaTeste.setUrlPraia("http://beachcam.meo.pt/reports/praia-do-moledo/");
-        praiaTeste2.setNomePraia("praia de teste 2");
-        praiaTeste2.setUrlPraia("http://beachcam.meo.pt/reports/praia-da-mariana/");
-
-        praias = new Praia[2];
-        praias[0] = praiaTeste;
-        praias[1] = praiaTeste2;
+//        praiaTeste.setNomePraia("praia de teste");
+//        praiaTeste.setUrlPraia("http://beachcam.meo.pt/reports/praia-do-moledo/");
+//        praiaTeste2.setNomePraia("praia de teste 2");
+//        praiaTeste2.setUrlPraia("http://beachcam.meo.pt/reports/praia-da-mariana/");
+//
+//        praias = new Praia[2];
+//        praias[0] = praiaTeste;
+//        praias[1] = praiaTeste2;
 
 
         botao = findViewById(R.id.button);
         text = findViewById(R.id.textView);
         text2 = findViewById(R.id.textView2);
-        condicoesPraias = new String[0];
+//        condicoesPraias = new String[0];
 
         texts[0] = text;
         texts[1] = text2;
@@ -58,17 +65,18 @@ public class MainActivity extends Activity {
         //        for(int i = 0; i < 1; ++i) {
         //            new AsyncT().execute(i);
         //        }
-                getBeachReportAll();
+//                actualizarReports();
+                actualizarListaPraias();
             }
         });
 
     }
 
-    protected void getBeachReportAll(){
+    protected void actualizarReports(){
 
         for(int i = 0; i < 2; ++i) {
             texts[i].setText("a carregar...");
-            new AsyncT().execute(praias[i].getUrlPraia(), ""+praias[i].getId());
+            new AsyncT().execute(praias[i].getUrlPraia(), ""+praias[i].getId(), "getBeachReport");
         }
 
     }
@@ -82,18 +90,21 @@ public class MainActivity extends Activity {
 
         @Override
         protected String[] doInBackground(String... s) {
-            //return Comunicar.contactar2("beachcam.sapo.pt", "/reports/praia-do-moledo/", 80);
-            Document doc;
-            String condicao = null;
-            try {
-                doc = Jsoup.connect(s[0]).get();
-                condicao = doc.select("div.classificationDescription").first().text();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            s[0] = condicao;
 
-            return s;
+            if(s[2] == "getBeachReport") {
+                Document doc;
+                String condicao = null;
+                try {
+                    doc = Jsoup.connect(s[0]).get();
+                    condicao = doc.select("div.classificationDescription").first().text();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                s[0] = condicao;
+
+                return s;
+            }
+
         }
 
         @Override
@@ -103,8 +114,59 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(String[] finalString) {
-            texts[Integer.parseInt(finalString[1]) - 1].setText(finalString[0]);
-
+//            texts[Integer.parseInt(finalString[1]) - 1].setText(finalString[0]);
+            texts[0].setText(finalString[0]);
+            texts[1].setText(finalString[1]);
         }
     }
+
+    @SuppressLint("StaticFieldLeak")
+    public void actualizarListaPraias() {
+
+            new AsyncTask<String, Void, Document>() {
+                @Override
+                protected void onPreExecute() {}
+                @Override
+                protected Document doInBackground(String... s) {
+                    Document fulldoc = null;
+//                    String[] praia = new String[2];
+                    try {
+                        fulldoc = Jsoup.connect(s[0]).get();
+//                        praia[0] = doc.select(".beachesContainer a").get(0).text();
+//                        praia[1] = "http://beachcam.meo.pt" + doc.select(".beachesContainer a").get(0).attr("href").toString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return fulldoc;
+                }
+                @Override
+                protected void onProgressUpdate(Void... voids) {}
+
+                @Override
+                protected void onPostExecute(Document fulldoc) {
+                    actualizarListaPraiasCont(fulldoc);
+                }
+            }.execute(urlListaPraias);
+    }
+
+    private void actualizarListaPraiasCont(Document fulldoc) {
+        Elements els = fulldoc.select(".beachesContainer a");
+        for(int k = 0; k < els.size() - 1; ++k){
+            Praia umaPraia = new Praia(k);
+            umaPraia.setNomePraia(els.get(k).text());
+            umaPraia.setUrlPraia("http://beachcam.meo.pt" + els.get(k).attr("href"));
+            listaPraias.add(umaPraia);
+        }
+        actualizarBDPraias(listaPraias);
+    }
+
+    private void actualizarBDPraias(List<Praia> listaPraias) {
+//        TODO
+//        BD
+    }
+
+
 }
+
+
+
