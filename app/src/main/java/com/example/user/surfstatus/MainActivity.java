@@ -152,6 +152,7 @@ public class MainActivity extends ListActivity {
     }
 
     private void actualizarListaPraiasCont(Document fulldoc) {
+        listaPraias = new ArrayList<>();;
         Elements els = fulldoc.select(".beachesContainer a");
         for(int k = 0; k < els.size() - 1; ++k){
             Praia umaPraia = new Praia(k);
