@@ -21,8 +21,8 @@ public class MainActivity extends Activity {
 
     Button botao;
     TextView text;
-    TextView text2;
-    TextView[] texts = new TextView[2];
+//    TextView text2;
+//    TextView[] texts = new TextView[2];
 
 //    String[] condicoesPraias;
 //
@@ -52,11 +52,11 @@ public class MainActivity extends Activity {
 
         botao = findViewById(R.id.button);
         text = findViewById(R.id.textView);
-        text2 = findViewById(R.id.textView2);
+//        text2 = findViewById(R.id.textView2);
 //        condicoesPraias = new String[0];
 
-        texts[0] = text;
-        texts[1] = text2;
+//        texts[0] = text;
+//        texts[1] = text2;
 
 
         botao.setOnClickListener(new View.OnClickListener() {
@@ -73,52 +73,54 @@ public class MainActivity extends Activity {
     }
 
     protected void actualizarReports(){
+        text.setText("");
+        for(int i = 0; i < listaPraias.size() -1; ++i) {
+//            texts[i].setText("a carregar...");
+//            new AsyncT().execute(praias[i].getUrlPraia(), ""+praias[i].getId(), "getBeachReport");
+            text.append(listaPraias.get(i).getNomePraia() + "\n");
 
-        for(int i = 0; i < 2; ++i) {
-            texts[i].setText("a carregar...");
-            new AsyncT().execute(praias[i].getUrlPraia(), ""+praias[i].getId(), "getBeachReport");
         }
 
     }
 
-    public class AsyncT extends AsyncTask<String, Long , String[]> {
-
-        @Override
-        protected void onPreExecute() {
-//            text.setText("a carregar...");
-        }
-
-        @Override
-        protected String[] doInBackground(String... s) {
-
-            if(s[2] == "getBeachReport") {
-                Document doc;
-                String condicao = null;
-                try {
-                    doc = Jsoup.connect(s[0]).get();
-                    condicao = doc.select("div.classificationDescription").first().text();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                s[0] = condicao;
-
-                return s;
-            }
-
-        }
-
-        @Override
-        protected void onProgressUpdate(Long... progress) {
-
-        }
-
-        @Override
-        protected void onPostExecute(String[] finalString) {
-//            texts[Integer.parseInt(finalString[1]) - 1].setText(finalString[0]);
-            texts[0].setText(finalString[0]);
-            texts[1].setText(finalString[1]);
-        }
-    }
+//    public class AsyncT extends AsyncTask<String, Long , String[]> {
+//
+//        @Override
+//        protected void onPreExecute() {
+////            text.setText("a carregar...");
+//        }
+//
+//        @Override
+//        protected String[] doInBackground(String... s) {
+//
+//            if(s[2] == "getBeachReport") {
+//                Document doc;
+//                String condicao = null;
+//                try {
+//                    doc = Jsoup.connect(s[0]).get();
+//                    condicao = doc.select("div.classificationDescription").first().text();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                s[0] = condicao;
+//
+//                return s;
+//            }
+//
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Long... progress) {
+//
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String[] finalString) {
+////            texts[Integer.parseInt(finalString[1]) - 1].setText(finalString[0]);
+////            texts[0].setText(finalString[0]);
+////            texts[1].setText(finalString[1]);
+//        }
+//    }
 
     @SuppressLint("StaticFieldLeak")
     public void actualizarListaPraias() {
@@ -158,6 +160,7 @@ public class MainActivity extends Activity {
             listaPraias.add(umaPraia);
         }
         actualizarBDPraias(listaPraias);
+        actualizarReports();
     }
 
     private void actualizarBDPraias(List<Praia> listaPraias) {
