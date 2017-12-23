@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Surf Status</string>
+    <string name="bActualizar">Actualizar</string>
 </resources>

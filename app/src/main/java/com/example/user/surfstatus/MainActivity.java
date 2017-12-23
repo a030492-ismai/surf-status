@@ -2,10 +2,13 @@ package com.example.user.surfstatus;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -16,19 +19,15 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 
-    Button botao;
-    TextView text;
-//    TextView text2;
-//    TextView[] texts = new TextView[2];
+    Button bActualizar;
+    ListView list;
+//    TextView text;
 
-//    String[] condicoesPraias;
-//
-//    Praia praiaTeste = new Praia(1);
-//    Praia praiaTeste2 = new Praia(2);
-//    Praia[] praias;
     List<Praia> listaPraias = new ArrayList<>();
     String urlListaPraias = "http://beachcam.meo.pt/reports/";
     Document doc;
@@ -40,46 +39,50 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        praiaTeste.setNomePraia("praia de teste");
-//        praiaTeste.setUrlPraia("http://beachcam.meo.pt/reports/praia-do-moledo/");
-//        praiaTeste2.setNomePraia("praia de teste 2");
-//        praiaTeste2.setUrlPraia("http://beachcam.meo.pt/reports/praia-da-mariana/");
-//
-//        praias = new Praia[2];
-//        praias[0] = praiaTeste;
-//        praias[1] = praiaTeste2;
+        bActualizar = findViewById(R.id.bActualizar);
+        list = getListView();
+//        text = findViewById(R.id.textView);
+//        text.setText("");
 
+        ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
+        for(Object object : listaPraias){
+            arraylistPraias.add(object != null ? object.toString() : null);
+        }
+        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
+        setListAdapter(adap);
 
-        botao = findViewById(R.id.button);
-        text = findViewById(R.id.textView);
-//        text2 = findViewById(R.id.textView2);
-//        condicoesPraias = new String[0];
-
-//        texts[0] = text;
-//        texts[1] = text2;
-
-
-        botao.setOnClickListener(new View.OnClickListener() {
+        bActualizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-        //        for(int i = 0; i < 1; ++i) {
-        //            new AsyncT().execute(i);
-        //        }
-//                actualizarReports();
                 actualizarListaPraias();
             }
         });
 
     }
 
+    @Override
+    public void onListItemClick(ListView parent, View v, int position, long id) {
+//        ecraDetalhes(Main3Activity.class, osItensDaLista.get(position));
+    }
+
     protected void actualizarReports(){
-        text.setText("");
-        for(int i = 0; i < listaPraias.size() -1; ++i) {
+//        text.setText("");
+//        for(int i = 0; i < listaPraias.size() -1; ++i) {
 //            texts[i].setText("a carregar...");
 //            new AsyncT().execute(praias[i].getUrlPraia(), ""+praias[i].getId(), "getBeachReport");
-            text.append(listaPraias.get(i).getNomePraia() + "\n");
-
+//            text.append(listaPraias.get(i).getNomePraia() + "\n");
+//
+//
+//        }
+        ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
+        for(int i = 0; i < listaPraias.size() -1; ++i){
+            arraylistPraias.add(listaPraias.get(i).getNomePraia());
         }
+//        for(Object object : listaPraias){
+//            arraylistPraias.add(object != null ? object.toString() : null);
+//        }
+        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
+        setListAdapter(adap);
 
     }
 
@@ -126,23 +129,20 @@ public class MainActivity extends Activity {
     public void actualizarListaPraias() {
 
             new AsyncTask<String, Void, Document>() {
-                @Override
-                protected void onPreExecute() {}
+//                @Override
+//                protected void onPreExecute() {}
                 @Override
                 protected Document doInBackground(String... s) {
                     Document fulldoc = null;
-//                    String[] praia = new String[2];
                     try {
                         fulldoc = Jsoup.connect(s[0]).get();
-//                        praia[0] = doc.select(".beachesContainer a").get(0).text();
-//                        praia[1] = "http://beachcam.meo.pt" + doc.select(".beachesContainer a").get(0).attr("href").toString();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     return fulldoc;
                 }
-                @Override
-                protected void onProgressUpdate(Void... voids) {}
+//                @Override
+//                protected void onProgressUpdate(Void... voids) {}
 
                 @Override
                 protected void onPostExecute(Document fulldoc) {
