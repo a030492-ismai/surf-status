@@ -3,13 +3,19 @@ package com.example.user.surfstatus;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,6 +37,7 @@ public class MainActivity extends ListActivity {
     List<Praia> listaPraias = new ArrayList<>();
     String urlListaPraias = "http://beachcam.meo.pt/reports/";
     Document doc;
+    ArrayList<String> arraylistPraias;
 
 
 
@@ -48,8 +55,10 @@ public class MainActivity extends ListActivity {
         for(Object object : listaPraias){
             arraylistPraias.add(object != null ? object.toString() : null);
         }
-        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
-        setListAdapter(adap);
+//        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
+//        setListAdapter(adap);
+        ToggleButtonListAdapter adap = new ToggleButtonListAdapter(this, arraylistPraias);
+        list.setAdapter(adap);
 
         bActualizar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,23 +75,16 @@ public class MainActivity extends ListActivity {
     }
 
     protected void actualizarReports(){
-//        text.setText("");
-//        for(int i = 0; i < listaPraias.size() -1; ++i) {
-//            texts[i].setText("a carregar...");
-//            new AsyncT().execute(praias[i].getUrlPraia(), ""+praias[i].getId(), "getBeachReport");
-//            text.append(listaPraias.get(i).getNomePraia() + "\n");
-//
-//
-//        }
-        ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
+
+        arraylistPraias = new ArrayList<>(listaPraias.size());
         for(int i = 0; i < listaPraias.size() -1; ++i){
             arraylistPraias.add(listaPraias.get(i).getNomePraia());
         }
-//        for(Object object : listaPraias){
-//            arraylistPraias.add(object != null ? object.toString() : null);
-//        }
-        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
-        setListAdapter(adap);
+//        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
+//        setListAdapter(adap);
+
+        ToggleButtonListAdapter adap = new ToggleButtonListAdapter(this, arraylistPraias);
+        list.setAdapter(adap);
 
     }
 
@@ -167,6 +169,39 @@ public class MainActivity extends ListActivity {
     private void actualizarBDPraias(List<Praia> listaPraias) {
 //        TODO
 //        BD
+    }
+
+    public class ToggleButtonListAdapter extends ArrayAdapter<String> {
+        private final Context context;
+        private final ArrayList<String> values;
+
+        public ToggleButtonListAdapter(Context context, ArrayList<String> values) {
+            super(context, R.layout.activity_main, values);
+            this.context = context;
+            this.values = values;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.layout_linhas, parent, false);
+            TextView textView = (TextView) rowView.findViewById(R.id.items);
+            Switch toggleButton = (Switch) rowView.findViewById(R.id.bMostrar);
+
+            toggleButton.setOnClickListener(new View.OnClickListener() {
+                private final ArrayList<String> values = arraylistPraias;
+
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getContext(), values.get(position) + " checked", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            textView.setText(values.get(position));
+
+            return rowView;
+        }
     }
 
 
