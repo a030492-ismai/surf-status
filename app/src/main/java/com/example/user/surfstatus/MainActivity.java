@@ -15,31 +15,24 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+
 
 public class MainActivity extends ListActivity {
 
     Button bActualizar;
     ListView list;
-//    TextView text;
 
-    List<Praia> listaPraias = new ArrayList<>();
     String urlListaPraias = "http://beachcam.meo.pt/reports/";
-    Document doc;
+    List<Praia> listaPraias = new ArrayList<>();
     ArrayList<String> arraylistPraias;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +41,6 @@ public class MainActivity extends ListActivity {
 
         bActualizar = findViewById(R.id.bActualizar);
         list = getListView();
-//        text = findViewById(R.id.textView);
-//        text.setText("");
 
         ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
         for(Object object : listaPraias){
@@ -75,7 +66,6 @@ public class MainActivity extends ListActivity {
     }
 
     protected void actualizarReports(){
-
         arraylistPraias = new ArrayList<>(listaPraias.size());
         for(int i = 0; i < listaPraias.size() -1; ++i){
             arraylistPraias.add(listaPraias.get(i).getNomePraia());
@@ -131,8 +121,6 @@ public class MainActivity extends ListActivity {
     public void actualizarListaPraias() {
 
             new AsyncTask<String, Void, Document>() {
-//                @Override
-//                protected void onPreExecute() {}
                 @Override
                 protected Document doInBackground(String... s) {
                     Document fulldoc = null;
@@ -143,8 +131,6 @@ public class MainActivity extends ListActivity {
                     }
                     return fulldoc;
                 }
-//                @Override
-//                protected void onProgressUpdate(Void... voids) {}
 
                 @Override
                 protected void onPostExecute(Document fulldoc) {
@@ -186,8 +172,8 @@ public class MainActivity extends ListActivity {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.layout_linhas, parent, false);
-            TextView textView = (TextView) rowView.findViewById(R.id.items);
-            Switch toggleButton = (Switch) rowView.findViewById(R.id.bMostrar);
+            TextView textView = rowView.findViewById(R.id.items);
+            Switch toggleButton =  rowView.findViewById(R.id.bMostrar);
 
             toggleButton.setOnClickListener(new View.OnClickListener() {
                 private final ArrayList<String> values = arraylistPraias;
