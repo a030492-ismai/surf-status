@@ -173,14 +173,22 @@ public class MainActivity extends ListActivity {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.layout_linhas, parent, false);
             TextView textView = rowView.findViewById(R.id.items);
-            Switch toggleButton =  rowView.findViewById(R.id.bMostrar);
+            final Switch toggleButton =  rowView.findViewById(R.id.bMostrar);
 
             toggleButton.setOnClickListener(new View.OnClickListener() {
                 private final ArrayList<String> values = arraylistPraias;
 
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), values.get(position) + " checked", Toast.LENGTH_LONG).show();
+                    if(toggleButton.isChecked()){
+                        listaPraias.get(position).setListar(true);
+                        //TODO alterar na bd
+                    }
+                    else{
+                        listaPraias.get(position).setListar(false);
+                        //TODO alterar na bd
+                    }
+                    Toast.makeText(getContext(), listaPraias.get(position).getNomePraia()+ " " + listaPraias.get(position).getListar(), Toast.LENGTH_LONG).show();
                 }
             });
 

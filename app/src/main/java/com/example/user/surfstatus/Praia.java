@@ -5,7 +5,7 @@ public class Praia {
 
     protected int praiaId;
     protected String nomePraia;
-    //protected String condicaoActual;
+    protected String condicaoActual;
     protected String urlPraia;
     protected boolean listar;
 
@@ -27,9 +27,12 @@ public class Praia {
     public String getNomePraia() {
         return nomePraia;
     }
-//    public void setCondicaoActual(String s) {
-//        condicaoActual = s;
-//    }
+    public void setCondicaoActual(String s) {
+        condicaoActual = s;
+    }
+    public String getCondicaoActual(){
+        return condicaoActual;
+    }
     public void setUrlPraia(String s){
         urlPraia = s;
     }
@@ -38,6 +41,11 @@ public class Praia {
     }
     public void setListar(boolean b){listar = b; }
     public boolean getListar(){return listar; }
+
+    @Override
+    public String toString(){
+        return this.getNomePraia() + "\t\t" + this.getCondicaoActual();
+    }
 
 
 }
