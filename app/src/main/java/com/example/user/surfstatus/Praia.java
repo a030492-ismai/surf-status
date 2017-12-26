@@ -9,6 +9,7 @@ import java.util.List;
 public class Praia {
 
     public static List<Praia> listaPraias = new ArrayList<>();
+    public static List<Praia> listaPraiasListar = new ArrayList<>();
 
     protected int praiaId;
     protected String nomePraia;
@@ -60,6 +61,12 @@ public class Praia {
     public Praia getPraia(int index){
         return listaPraias.get(index);
     }
+
+    public static void addPraiasListar(ArrayList<Praia> praias){
+        listaPraiasListar = null;
+        listaPraiasListar = praias;
+    }
+
 
     @Override
     public String toString(){

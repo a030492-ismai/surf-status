@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.user.surfstatus.Praia.listaPraias;
+import static com.example.user.surfstatus.Praia.listaPraiasListar;
 
 public class Main2Activity extends AppCompatActivity {
     ListView list;
@@ -39,7 +40,7 @@ public class Main2Activity extends AppCompatActivity {
         bActualizarPraias.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO refresh lista praias main
+                actualizarListaPraias();
 
             }
         });
@@ -75,8 +76,9 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     public void actualizarListaPraias(){
+
         ArrayAdapter<Praia> adap = new ArrayAdapter<Praia>(
-                this, android.R.layout.simple_list_item_1, listaPraias);
+                this, android.R.layout.simple_list_item_1, listaPraiasListar);
         list.setAdapter(adap);
     }
 

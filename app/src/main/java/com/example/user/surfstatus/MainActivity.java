@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.user.surfstatus.Praia.listaPraias;
+import static com.example.user.surfstatus.Praia.listaPraiasListar;
 
 
 public class MainActivity extends ListActivity {
@@ -188,10 +189,12 @@ public class MainActivity extends ListActivity {
                 public void onClick(View v) {
                     if(toggleButton.isChecked()){
                         listaPraias.get(position).setListar(true);
+                        listaPraiasListar.add(listaPraias.get(position));
                         //TODO alterar na bd
                     }
                     else{
                         listaPraias.get(position).setListar(false);
+                        listaPraiasListar.remove(listaPraias.get(position));
                         //TODO alterar na bd
                     }
                     Toast.makeText(getContext(), listaPraias.get(position).getNomePraia()+ " " + listaPraias.get(position).getListar(), Toast.LENGTH_LONG).show();
