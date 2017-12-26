@@ -21,9 +21,7 @@ public class Praia {
         praiaId = id;
 
     }
-    public Praia() {
-        praiaId = -1;
-    }
+
     public void setId(int id) {
         praiaId = id;
     }
@@ -31,6 +29,7 @@ public class Praia {
         return praiaId;
     }
     public void setNomePraia(String s) {
+
         nomePraia = s;
     }
     public String getNomePraia() {
@@ -67,11 +66,12 @@ public class Praia {
         listaPraiasListar = praias;
     }
 
-
     @Override
     public String toString(){
-        return this.getNomePraia() + "\t\t" + this.getCondicaoActual();
+        if(this.getCondicaoActual() == null){
+            return this.getNomePraia();
+        }else{
+            return this.getNomePraia() + "\n" + this.getCondicaoActual();
+        }
     }
-
-
 }

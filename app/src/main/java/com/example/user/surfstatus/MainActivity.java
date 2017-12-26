@@ -47,13 +47,13 @@ public class MainActivity extends ListActivity {
         list = getListView();
 
         ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
-        for(Object object : listaPraias){
-            arraylistPraias.add(object != null ? object.toString() : null);
-        }
-//        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
-//        setListAdapter(adap);
-        ToggleButtonListAdapter adap = new ToggleButtonListAdapter(this, arraylistPraias);
-        list.setAdapter(adap);
+//        for(Object object : listaPraias){
+//            arraylistPraias.add(object != null ? object.toString() : null);
+//        }
+////        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
+////        setListAdapter(adap);
+//        ToggleButtonListAdapter adap = new ToggleButtonListAdapter(this, arraylistPraias);
+//        list.setAdapter(adap);
 
         bActualizar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,13 +69,11 @@ public class MainActivity extends ListActivity {
 //        ecraDetalhes(Main3Activity.class, osItensDaLista.get(position));
     }
 
-    protected void actualizarReports(){
+    protected void setListAdap(){
         arraylistPraias = new ArrayList<>(listaPraias.size());
         for(int i = 0; i < listaPraias.size() -1; ++i){
             arraylistPraias.add(listaPraias.get(i).getNomePraia());
         }
-//        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
-//        setListAdapter(adap);
 
         ToggleButtonListAdapter adap = new ToggleButtonListAdapter(this, arraylistPraias);
         list.setAdapter(adap);
@@ -116,7 +114,7 @@ public class MainActivity extends ListActivity {
         }
         Praia.addPraias(listaPraiasTemp);
 //        actualizarBDPraias(listaPraias);
-        actualizarReports();
+        setListAdap();
 
     }
 

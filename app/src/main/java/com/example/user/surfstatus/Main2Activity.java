@@ -43,7 +43,7 @@ public class Main2Activity extends AppCompatActivity {
 //        listaPraias.add(-1, new Praia());
 
         adap = new ArrayAdapter<Praia>(this, android.R.layout.simple_list_item_1, listaPraiasListar);
-        list.setAdapter(adap);
+   //     list.setAdapter(adap);
 
 
         bActualizarPraias.setOnClickListener(new View.OnClickListener() {
@@ -61,11 +61,6 @@ public class Main2Activity extends AppCompatActivity {
         if(listaPraias.size() == 0){
             Toast.makeText(this, "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
         }
-//        else{
-//            ArrayAdapter<Praia> adap = new ArrayAdapter<Praia>(this, android.R.layout.simple_list_item_1, listaPraias);
-//            list.setAdapter(adap);
-//        }
-
 
     }
 
@@ -109,6 +104,7 @@ public class Main2Activity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
                 s[0] = condicao;
 
                 return s;
@@ -116,7 +112,10 @@ public class Main2Activity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(String[] s) {
+
+
                 praia.setCondicaoActual(s[0]);
+
                 list.setAdapter(adap);
 
             }
