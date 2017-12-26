@@ -1,24 +1,19 @@
 package com.example.user.surfstatus;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jsoup.Jsoup;
@@ -26,9 +21,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import static com.example.user.surfstatus.Praia.listaPraias;
 import static com.example.user.surfstatus.Praia.listaPraiasListar;
@@ -63,6 +56,18 @@ public class Main2Activity extends AppCompatActivity {
         if(listaPraias.size() == 0){
             Toast.makeText(this, "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
         }
+
+        list.setOnItemClickListener(
+                new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View view,
+                                            int position, long id) {
+                        Object o = list.getItemAtPosition(position);
+                        ecraDetalhes(Main3Activity.class, listaPraiasListar.get(position).getUrlPraia());
+                    }
+                }
+        );
     }
 
 
@@ -123,6 +128,12 @@ public class Main2Activity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         list.setAdapter(adap);
+    }
+
+    private void ecraDetalhes(Class<?> ecraDetalhes, String url){
+        Intent y = new Intent(this, ecraDetalhes);
+        y.putExtra("url", url);
+        startActivity(y);
     }
 
 }

@@ -1,10 +1,8 @@
 package com.example.user.surfstatus;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,7 +33,7 @@ public class MainActivity extends ListActivity {
     ListView list;
 
     String urlListaPraias = "http://beachcam.meo.pt/reports/";
-//    List<Praia> listaPraias = new ArrayList<>();
+
     ArrayList<String> arraylistPraias;
 
     @Override
@@ -47,13 +45,7 @@ public class MainActivity extends ListActivity {
         list = getListView();
 
         ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
-//        for(Object object : listaPraias){
-//            arraylistPraias.add(object != null ? object.toString() : null);
-//        }
-////        ArrayAdapter<String> adap = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraylistPraias);
-////        setListAdapter(adap);
-//        ToggleButtonListAdapter adap = new ToggleButtonListAdapter(this, arraylistPraias);
-//        list.setAdapter(adap);
+
 
         bActualizar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +58,7 @@ public class MainActivity extends ListActivity {
 
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
-//        ecraDetalhes(Main3Activity.class, osItensDaLista.get(position));
+        //TODO delete?
     }
 
     protected void setListAdap(){
