@@ -116,7 +116,9 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String[] s) {
 
-                praia.setCondicaoActual(s[0] + "\t@" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().getTime()));
+                praia.setCondicaoActual(s[0]
+//                       + "\t@" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().getTime())
+                );
 
                 list.setAdapter(adap);
 
