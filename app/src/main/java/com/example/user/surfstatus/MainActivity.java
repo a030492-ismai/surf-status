@@ -82,45 +82,6 @@ public class MainActivity extends ListActivity {
 
     }
 
-//    public class AsyncT extends AsyncTask<String, Long , String[]> {
-//
-//        @Override
-//        protected void onPreExecute() {
-////            text.setText("a carregar...");
-//        }
-//
-//        @Override
-//        protected String[] doInBackground(String... s) {
-//
-//            if(s[2] == "getBeachReport") {
-//                Document doc;
-//                String condicao = null;
-//                try {
-//                    doc = Jsoup.connect(s[0]).get();
-//                    condicao = doc.select("div.classificationDescription").first().text();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                s[0] = condicao;
-//
-//                return s;
-//            }
-//
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Long... progress) {
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String[] finalString) {
-////            texts[Integer.parseInt(finalString[1]) - 1].setText(finalString[0]);
-////            texts[0].setText(finalString[0]);
-////            texts[1].setText(finalString[1]);
-//        }
-//    }
-
     @SuppressLint("StaticFieldLeak")
     public void actualizarListaPraias() {
 
@@ -190,6 +151,7 @@ public class MainActivity extends ListActivity {
                     if(toggleButton.isChecked()){
                         listaPraias.get(position).setListar(true);
                         listaPraiasListar.add(listaPraias.get(position));
+
                         //TODO alterar na bd
                     }
                     else{

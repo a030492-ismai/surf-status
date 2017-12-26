@@ -1,6 +1,8 @@
 package com.example.user.surfstatus;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +30,7 @@ public class Main2Activity extends AppCompatActivity {
 //    public static List<Praia> listaPraias = new ArrayList<>();
     FloatingActionButton bActualizarPraias;
     Button bAdicionarPraias;
+    ArrayAdapter<Praia> adap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +42,17 @@ public class Main2Activity extends AppCompatActivity {
         bAdicionarPraias = (Button) findViewById(R.id.bAdicionarPraias);
 //        listaPraias.add(-1, new Praia());
 
+        adap = new ArrayAdapter<Praia>(this, android.R.layout.simple_list_item_1, listaPraiasListar);
+        list.setAdapter(adap);
 
 
         bActualizarPraias.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                actualizarListaPraias();
+                for(Praia praia : listaPraiasListar){
+                    actualizarCondicoes(praia);
+                }
+//                actualizarListaPraias();
 
             }
         });
@@ -49,10 +61,10 @@ public class Main2Activity extends AppCompatActivity {
         if(listaPraias.size() == 0){
             Toast.makeText(this, "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
         }
-        else{
-            ArrayAdapter<Praia> adap = new ArrayAdapter<Praia>(this, android.R.layout.simple_list_item_1, listaPraias);
-            list.setAdapter(adap);
-        }
+//        else{
+//            ArrayAdapter<Praia> adap = new ArrayAdapter<Praia>(this, android.R.layout.simple_list_item_1, listaPraias);
+//            list.setAdapter(adap);
+//        }
 
 
     }
@@ -75,10 +87,45 @@ public class Main2Activity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void actualizarListaPraias(){
+//    public void actualizarListaPraias(){
+//
+//
+//        ArrayAdapter<Praia> adap = new ArrayAdapter<Praia>(this, android.R.layout.simple_list_item_1, listaPraiasListar);
+//        list.setAdapter(adap);
+//
+//    }
 
-        ArrayAdapter<Praia> adap = new ArrayAdapter<Praia>(
-                this, android.R.layout.simple_list_item_1, listaPraiasListar);
+    @SuppressLint("StaticFieldLeak")
+    public void actualizarCondicoes(final Praia praia){
+        new AsyncTask<String, Long , String[]>() {
+
+            @Override
+            protected String[] doInBackground(String... s) {
+                Document doc;
+                String condicao = null;
+                try {
+                    doc = Jsoup.connect(s[0]).get();
+                    condicao = doc.select("div.classificationDescription").first().text();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                s[0] = condicao;
+
+                return s;
+            }
+
+            @Override
+            protected void onPostExecute(String[] s) {
+                praia.setCondicaoActual(s[0]);
+                list.setAdapter(adap);
+
+            }
+        }.execute(praia.getUrlPraia());
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
         list.setAdapter(adap);
     }
 
