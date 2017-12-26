@@ -57,18 +57,12 @@ public class Main2Activity extends AppCompatActivity {
                 for(Praia praia : listaPraiasListar){
                     actualizarCondicoes(praia);
                 }
-//                actualizarCores();
-
-//                actualizarListaPraias();
-
             }
         });
-
 
         if(listaPraias.size() == 0){
             Toast.makeText(this, "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
         }
-
     }
 
 
@@ -89,14 +83,6 @@ public class Main2Activity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    public void actualizarListaPraias(){
-//
-//
-//        ArrayAdapter<Praia> adap = new ArrayAdapter<Praia>(this, android.R.layout.simple_list_item_1, listaPraiasListar);
-//        list.setAdapter(adap);
-//
-//    }
 
     @SuppressLint("StaticFieldLeak")
     public void actualizarCondicoes(final Praia praia){
