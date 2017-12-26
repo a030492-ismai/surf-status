@@ -1,7 +1,14 @@
 package com.example.user.surfstatus;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+
 public class Praia {
+
+    public static List<Praia> listaPraias = new ArrayList<>();
 
     protected int praiaId;
     protected String nomePraia;
@@ -11,6 +18,7 @@ public class Praia {
 
     public Praia(int id) {
         praiaId = id;
+
     }
     public Praia() {
         praiaId = -1;
@@ -41,6 +49,17 @@ public class Praia {
     }
     public void setListar(boolean b){listar = b; }
     public boolean getListar(){return listar; }
+
+    public static void addPraias(ArrayList<Praia> praias){
+        listaPraias = null;
+        listaPraias = praias;
+    }
+    public void delPraia(int index){
+        listaPraias.remove(index);
+    }
+    public Praia getPraia(int index){
+        return listaPraias.get(index);
+    }
 
     @Override
     public String toString(){

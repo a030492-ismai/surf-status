@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.user.surfstatus.Praia.listaPraias;
+
 
 public class MainActivity extends ListActivity {
 
@@ -31,7 +34,7 @@ public class MainActivity extends ListActivity {
     ListView list;
 
     String urlListaPraias = "http://beachcam.meo.pt/reports/";
-    List<Praia> listaPraias = new ArrayList<>();
+//    List<Praia> listaPraias = new ArrayList<>();
     ArrayList<String> arraylistPraias;
 
     @Override
@@ -140,16 +143,19 @@ public class MainActivity extends ListActivity {
     }
 
     private void actualizarListaPraiasCont(Document fulldoc) {
-        listaPraias = new ArrayList<>();;
+        ArrayList<Praia> listaPraiasTemp = new ArrayList<>();
         Elements els = fulldoc.select(".beachesContainer a");
         for(int k = 0; k < els.size() - 1; ++k){
             Praia umaPraia = new Praia(k);
             umaPraia.setNomePraia(els.get(k).text());
             umaPraia.setUrlPraia("http://beachcam.meo.pt" + els.get(k).attr("href"));
-            listaPraias.add(umaPraia);
+//            listaPraias.add(umaPraia);
+            listaPraiasTemp.add(umaPraia);
         }
-        actualizarBDPraias(listaPraias);
+        Praia.addPraias(listaPraiasTemp);
+//        actualizarBDPraias(listaPraias);
         actualizarReports();
+
     }
 
     private void actualizarBDPraias(List<Praia> listaPraias) {
