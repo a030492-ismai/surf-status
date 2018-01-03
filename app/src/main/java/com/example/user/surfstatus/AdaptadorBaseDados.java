@@ -3,6 +3,7 @@ package com.example.user.surfstatus;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
@@ -29,15 +30,22 @@ public class AdaptadorBaseDados {
         database.insert("praias", null, values);
     }
 
+    public void dropPraias(){
+        database.execSQL("DROP TABLE IF EXISTS praias");
+        database.execSQL("CREATE TABLE praias(_id integer primary key autoincrement, nomePraia varchar(40), condicaoActual varchar(40), url varchar(60), listar bit default 0)");
+
+    }
 
 
-//    private Cursor obterTodosRegistos() {
-//        String[] colunas = new String[3];
-//        colunas[0] = "nome";
-//        colunas[1] = "morada";
-//        colunas[2] = "telefone";
-//        return database.query("contactos", colunas, null, null, null, null, "nome");
-//    }
+
+    private Cursor obterTodosRegistos() {
+        String[] colunas = new String[4];
+        colunas[0] = "_id";
+        colunas[1] = "nomePraia";
+        colunas[2] = "condicaoActual";
+        colunas[3] = "listar";
+        return database.query("praias", colunas, null, null, null, null, "_id");
+    }
 //    public List<String> obterTodosTelefones() {
 //        ArrayList<String> telefones = new ArrayList<String>();
 //        Cursor cursor = obterTodosRegistos();
@@ -130,14 +138,83 @@ public class AdaptadorBaseDados {
 //        return contacto;
 //    }
 //
-//    public int updateNome(String nomeAntigo, String nome, String morada, String telefone) {
-//        String whereClause = "nome = ?";
-//        String[] whereArgs = new String[1];
-//        whereArgs[0] = nomeAntigo;
-//        ContentValues values = new ContentValues();
-//        values.put("nome", nome);
-//        values.put("morada", morada);
-//        values.put("telefone", telefone);
-//        return database.update("contactos", values, whereClause, whereArgs);
+    public void updateListar(String _nomePraia, int _listar) {
+        String whereClause = "nomePraia = ?";
+        String[] whereArgs = new String[1];
+        whereArgs[0] = _nomePraia;
+        ContentValues values = new ContentValues();
+        values.put("listar", _listar);
+        database.update("praias", values, whereClause, whereArgs);
+    }
+
+
+    public int getSize() {
+        return (int)DatabaseUtils.queryNumEntries(database, "praias");
+    }
+
+//    public String[] getPraia(int i) {
+//        String[] nomePraia = new String[5];
+//        String whereClause = "_id = ?";
+//        String whereArgs[] = new String[1];
+//        whereArgs[0] = i + "";
+//        Cursor cursor = database.query("praias", null, whereClause, whereArgs, null, null, null);
+//        cursor.moveToFirst();
+//
+//        nomePraia[0] = cursor.getString(0);
+//        nomePraia[1] = cursor.getString(1);
+//        nomePraia[2] = cursor.getString(2);
+//        nomePraia[3] = cursor.getString(3);
+//        nomePraia[4] = cursor.getString(4);
+//
+//        return nomePraia;
 //    }
+
+    public String getNomePraia(int i) {
+        String nomePraia;
+        String whereClause = "_id = ?";
+        String whereArgs[] = new String[1];
+        whereArgs[0] = i + "";
+        Cursor cursor = database.query("praias", null, whereClause, whereArgs, null, null, null);
+        cursor.moveToFirst();
+
+        nomePraia = cursor.getString(1);
+        cursor.close();
+
+        return nomePraia;
+    }
+
+    public boolean getListarPraia(int i){
+        boolean listarPraia = false;
+        String whereClause = "_id = ?";
+        String whereArgs[] = new String[1];
+        whereArgs[0] = i + "";
+        Cursor cursor = database.query("praias", null, whereClause, whereArgs, null, null, null);
+        cursor.moveToFirst();
+
+        if(cursor.getString(4).equals("1")){
+            listarPraia = true;
+        }
+        else{
+            listarPraia = false;
+        }
+
+        cursor.close();
+
+        return listarPraia;
+    }
+
+    public ArrayList<String> getPraiasListar(){
+        ArrayList<String> praiasListar = new ArrayList<>();
+        Cursor cursor = obterTodosRegistos();
+        if (cursor.moveToFirst()) {
+            do {
+                if(cursor.getString(3).equals("1")){
+                    praiasListar.add(cursor.getString(1));
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return praiasListar;
+    }
+
 }

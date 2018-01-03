@@ -32,6 +32,8 @@ public class MainActivity extends ListActivity {
     Button bActualizar;
     ListView list;
 
+    AdaptadorBaseDados bd;
+
     String urlListaPraias = "http://beachcam.meo.pt/reports/";
 
     ArrayList<String> arraylistPraias;
@@ -40,6 +42,8 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        bd = new AdaptadorBaseDados(this).open();
 
         bActualizar = findViewById(R.id.bActualizar);
         list = getListView();
@@ -54,6 +58,10 @@ public class MainActivity extends ListActivity {
             }
         });
 
+        setListAdap();
+
+
+
     }
 
     @Override
@@ -62,14 +70,17 @@ public class MainActivity extends ListActivity {
     }
 
     protected void setListAdap(){
-        arraylistPraias = new ArrayList<>(listaPraias.size());
-        for(int i = 0; i < listaPraias.size() -1; ++i){
-            arraylistPraias.add(listaPraias.get(i).getNomePraia());
+//        arraylistPraias = new ArrayList<>(listaPraias.size());
+        arraylistPraias = new ArrayList<>(bd.getSize());
+
+        for(int i = 1; i < bd.getSize() + 1; ++i){
+//            arraylistPraias.add(listaPraias.get(i).getNomePraia());
+            arraylistPraias.add(bd.getNomePraia(i));
+
         }
 
         ToggleButtonListAdapter adap = new ToggleButtonListAdapter(this, arraylistPraias);
         list.setAdapter(adap);
-
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -101,18 +112,20 @@ public class MainActivity extends ListActivity {
             Praia umaPraia = new Praia(k);
             umaPraia.setNomePraia(els.get(k).text());
             umaPraia.setUrlPraia("http://beachcam.meo.pt" + els.get(k).attr("href"));
-//            listaPraias.add(umaPraia);
             listaPraiasTemp.add(umaPraia);
         }
         Praia.addPraias(listaPraiasTemp);
-//        actualizarBDPraias(listaPraias);
+        actualizarBDPraias(listaPraiasTemp);
         setListAdap();
 
     }
 
     private void actualizarBDPraias(List<Praia> listaPraias) {
-//        TODO
-//        BD
+        bd.dropPraias();
+
+        for (Praia praia : listaPraias){
+            bd.inserirPraia(praia.getNomePraia(), praia.getUrlPraia());
+        }
     }
 
     public class ToggleButtonListAdapter extends ArrayAdapter<String> {
@@ -132,6 +145,8 @@ public class MainActivity extends ListActivity {
             View rowView = inflater.inflate(R.layout.layout_linhas, parent, false);
             TextView textView = rowView.findViewById(R.id.items);
             final Switch toggleButton =  rowView.findViewById(R.id.bMostrar);
+//            toggleButton.setChecked(bd.getListarPraia(position+1));
+            toggleButton.setChecked(bd.getListarPraia(position+1));
 
             toggleButton.setOnClickListener(new View.OnClickListener() {
                 private final ArrayList<String> values = arraylistPraias;
@@ -139,17 +154,17 @@ public class MainActivity extends ListActivity {
                 @Override
                 public void onClick(View v) {
                     if(toggleButton.isChecked()){
-                        listaPraias.get(position).setListar(true);
-                        listaPraiasListar.add(listaPraias.get(position));
+//                        listaPraias.get(position).setListar(true);
+//                        listaPraiasListar.add(listaPraias.get(position));
 
-                        //TODO alterar na bd
+                        bd.updateListar(bd.getNomePraia(position+1), 1);
                     }
                     else{
-                        listaPraias.get(position).setListar(false);
-                        listaPraiasListar.remove(listaPraias.get(position));
-                        //TODO alterar na bd
+//                        listaPraias.get(position).setListar(false);
+//                        listaPraiasListar.remove(listaPraias.get(position));
+
+                        bd.updateListar(bd.getNomePraia(position+1), 0);
                     }
-                    Toast.makeText(getContext(), listaPraias.get(position).getNomePraia()+ " " + listaPraias.get(position).getListar(), Toast.LENGTH_LONG).show();
                 }
             });
 

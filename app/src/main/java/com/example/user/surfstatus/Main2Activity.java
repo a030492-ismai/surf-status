@@ -21,16 +21,19 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.example.user.surfstatus.Praia.listaPraias;
-import static com.example.user.surfstatus.Praia.listaPraiasListar;
+//import static com.example.user.surfstatus.Praia.listaPraias;
+//import static com.example.user.surfstatus.Praia.listaPraiasListar;
 
 public class Main2Activity extends AppCompatActivity {
     ListView list;
     FloatingActionButton bActualizarPraias;
     Button bAdicionarPraias;
     ArrayAdapter<Praia> adap;
+    AdaptadorBaseDados bd;
+    ArrayList listaPraiasListar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,21 +44,23 @@ public class Main2Activity extends AppCompatActivity {
         bActualizarPraias = findViewById(R.id.bActualizarPraias);
         bAdicionarPraias = findViewById(R.id.bAdicionarPraias);
 
+        bd = new AdaptadorBaseDados(this).open();
+        listaPraiasListar = listarBD();
 
         adap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, listaPraiasListar);
 
         bActualizarPraias.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for(Praia praia : listaPraiasListar){
-                    actualizarCondicoes(praia);
+//                for(ArrayList<String> praia : listaPraiasListar){
+//                    actualizarCondicoes(praia);
+//                }
+                for(int i = 0; i < listaPraiasListar.size(); ++i){
+                    actualizarCondicoes(listaPraiasListar.get(i).toString());
                 }
             }
         });
 
-        if(listaPraias.size() == 0){
-            Toast.makeText(this, "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
-        }
 
         list.setOnItemClickListener(
                 new AdapterView.OnItemClickListener()
@@ -64,7 +69,7 @@ public class Main2Activity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> arg0, View view,
                                             int position, long id) {
                         Object o = list.getItemAtPosition(position);
-                        ecraDetalhes(Main3Activity.class, listaPraiasListar.get(position).getUrlPraia());
+//                        ecraDetalhes(Main3Activity.class, listaPraiasListar.get(position).getUrlPraia());
                     }
                 }
         );
@@ -90,11 +95,11 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    public void actualizarCondicoes(final Praia praia){
+    public void actualizarCondicoes(final String praia){
         new AsyncTask<String, Long , String[]>() {
             @Override
             protected void onPreExecute(){
-                praia.setCondicaoActual("aguarde...");
+//                praia.setCondicaoActual("aguarde...");
                 list.setAdapter(adap);
             }
             @Override
@@ -116,20 +121,35 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String[] s) {
 
-                praia.setCondicaoActual(s[0]
+//                praia.setCondicaoActual(s[0]
 //                       + "\t@" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().getTime())
-                );
+//                );
 
                 list.setAdapter(adap);
 
             }
-        }.execute(praia.getUrlPraia());
-    }
+//        }.execute(praia.getUrlPraia());
+        }.execute(praia);
+        }
 
     @Override
     public void onResume(){
         super.onResume();
+        bd.open();
+        listaPraiasListar = listarBD();
         list.setAdapter(adap);
+
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        bd.close();
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        bd.close();
     }
 
     private void ecraDetalhes(Class<?> ecraDetalhes, String url){
@@ -137,5 +157,20 @@ public class Main2Activity extends AppCompatActivity {
         y.putExtra("url", url);
         startActivity(y);
     }
+
+
+
+    public ArrayList listarBD(){
+        if (bd.getSize() > 0) {
+            return bd.getPraiasListar();
+        }
+        else{
+            Toast.makeText(this, "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
+            return null;
+        }
+    }
+
+
+
 
 }

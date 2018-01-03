@@ -2,7 +2,6 @@ package com.example.user.surfstatus;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -29,7 +28,6 @@ public class Praia {
         return praiaId;
     }
     public void setNomePraia(String s) {
-
         nomePraia = s;
     }
     public String getNomePraia() {
@@ -74,4 +72,6 @@ public class Praia {
             return this.getNomePraia() + "\n" + this.getCondicaoActual();
         }
     }
+
+
 }

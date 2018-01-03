@@ -13,7 +13,7 @@ public class AjudaUsoBaseDados extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String s =
-                "CREATE TABLE praias(praiaId integer primary key autoincrement, nomePraia varchar(40), url varchar(60), listar bit default 0)";
+                "CREATE TABLE praias(_id integer primary key autoincrement, nomePraia varchar(40), condicaoActual varchar(40), url varchar(60), listar bit default 0)";
         db.execSQL(s);
     }
     @Override
