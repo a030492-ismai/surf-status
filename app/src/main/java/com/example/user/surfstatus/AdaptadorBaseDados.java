@@ -32,18 +32,19 @@ public class AdaptadorBaseDados {
 
     public void dropPraias(){
         database.execSQL("DROP TABLE IF EXISTS praias");
-        database.execSQL("CREATE TABLE praias(_id integer primary key autoincrement, nomePraia varchar(40), condicaoActual varchar(40), url varchar(60), listar bit default 0)");
+        database.execSQL("CREATE TABLE praias(_id integer primary key autoincrement, nomePraia varchar(40) unique, condicaoActual varchar(40), url varchar(60), listar bit default 0)");
 
     }
 
 
 
     private Cursor obterTodosRegistos() {
-        String[] colunas = new String[4];
+        String[] colunas = new String[5];
         colunas[0] = "_id";
         colunas[1] = "nomePraia";
         colunas[2] = "condicaoActual";
-        colunas[3] = "listar";
+        colunas[3] = "url";
+        colunas[4] = "listar";
         return database.query("praias", colunas, null, null, null, null, "_id");
     }
 //    public List<String> obterTodosTelefones() {
@@ -183,6 +184,20 @@ public class AdaptadorBaseDados {
         return nomePraia;
     }
 
+    public String getUrl(String s) {
+        String url;
+        String whereClause = "nomePraia = ?";
+        String whereArgs[] = new String[1];
+        whereArgs[0] = s;
+        Cursor cursor = database.query("praias", null, whereClause, whereArgs, null, null, null);
+        cursor.moveToFirst();
+
+        url = cursor.getString(3);
+        cursor.close();
+
+        return url;
+    }
+
     public boolean getListarPraia(int i){
         boolean listarPraia = false;
         String whereClause = "_id = ?";
@@ -203,18 +218,34 @@ public class AdaptadorBaseDados {
         return listarPraia;
     }
 
-    public ArrayList<String> getPraiasListar(){
-        ArrayList<String> praiasListar = new ArrayList<>();
+    public ArrayList<String[]> getPraiasListar(){
+        ArrayList<String[]> praiasListar = new ArrayList<>();
+
         Cursor cursor = obterTodosRegistos();
         if (cursor.moveToFirst()) {
             do {
-                if(cursor.getString(3).equals("1")){
-                    praiasListar.add(cursor.getString(1));
+                if(cursor.getString(4).equals("1")){
+                    String[] s = new String[4];
+                    s[0] = cursor.getString(1) +"";//nome
+                    s[1] = cursor.getString(2) +"";//condicao
+                    s[2] = cursor.getString(3) +"";//url
+                    s[3] = cursor.getString(4) +"";//listar
+                    praiasListar.add(s);
                 }
             } while (cursor.moveToNext());
         }
         cursor.close();
         return praiasListar;
     }
+
+    public void updateCondicaoPraia(String[] s) {
+        String whereClause = "nomePraia = ?";
+        String[] whereArgs = new String[1];
+        whereArgs[0] = s[0];
+        ContentValues values = new ContentValues();
+        values.put("condicaoActual", s[1]);
+        database.update("praias", values, whereClause, whereArgs);
+    }
+
 
 }

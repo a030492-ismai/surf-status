@@ -10,10 +10,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jsoup.Jsoup;
@@ -23,17 +25,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-//import static com.example.user.surfstatus.Praia.listaPraias;
-//import static com.example.user.surfstatus.Praia.listaPraiasListar;
 
 public class Main2Activity extends AppCompatActivity {
     ListView list;
     FloatingActionButton bActualizarPraias;
     Button bAdicionarPraias;
-    ArrayAdapter<Praia> adap;
     AdaptadorBaseDados bd;
-    ArrayList listaPraiasListar;
+    ArrayAdapter adap;
+    ArrayList<String[]> listaPraias;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,27 +42,6 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
         list = findViewById(android.R.id.list);
-        bActualizarPraias = findViewById(R.id.bActualizarPraias);
-        bAdicionarPraias = findViewById(R.id.bAdicionarPraias);
-
-        bd = new AdaptadorBaseDados(this).open();
-        listaPraiasListar = listarBD();
-
-        adap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, listaPraiasListar);
-
-        bActualizarPraias.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                for(ArrayList<String> praia : listaPraiasListar){
-//                    actualizarCondicoes(praia);
-//                }
-                for(int i = 0; i < listaPraiasListar.size(); ++i){
-                    actualizarCondicoes(listaPraiasListar.get(i).toString());
-                }
-            }
-        });
-
-
         list.setOnItemClickListener(
                 new AdapterView.OnItemClickListener()
                 {
@@ -73,72 +53,87 @@ public class Main2Activity extends AppCompatActivity {
                     }
                 }
         );
-    }
+        bActualizarPraias = findViewById(R.id.bActualizarPraias);
+        bAdicionarPraias = findViewById(R.id.bAdicionarPraias);
+        bd = new AdaptadorBaseDados(this).open();
+
+        setAdap();
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.bAdicionarPraias) {
-            Intent main1Intent = new Intent(this,MainActivity.class);
-            startActivity(main1Intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        bActualizarPraias.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateCondicoes();
+
+            }
+        });
+
+
     }
 
     @SuppressLint("StaticFieldLeak")
-    public void actualizarCondicoes(final String praia){
-        new AsyncTask<String, Long , String[]>() {
-            @Override
-            protected void onPreExecute(){
-//                praia.setCondicaoActual("aguarde...");
-                list.setAdapter(adap);
-            }
+    private void updateCondicoes() {
+
+        for (final String[] praia : listaPraias){
+
+            new AsyncTask<String, Long , String[]>() {
+
+                @Override
+                protected void onPreExecute(){
+                    praia[1] = "a carregar...";
+                    list.setAdapter(adap);
+                }
             @Override
             protected String[] doInBackground(String... s) {
                 Document doc;
-                String condicao = null;
                 try {
-                    doc = Jsoup.connect(s[0]).get();
-                    condicao = doc.select("div.classificationDescription").first().text();
+                    doc = Jsoup.connect(s[2]).get();
+                    s[1] = doc.select("div.classificationDescription").first().text();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                s[0] = condicao;
 
                 return s;
             }
 
             @Override
             protected void onPostExecute(String[] s) {
-
-//                praia.setCondicaoActual(s[0]
-//                       + "\t@" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().getTime())
-//                );
-
+                bd.updateCondicaoPraia(s);
                 list.setAdapter(adap);
-
             }
-//        }.execute(praia.getUrlPraia());
-        }.execute(praia);
+            }.execute(praia);
         }
+
+    }
+
+    private void setAdap() {
+        listaPraias = new ArrayList<>(bd.getSize());
+        listaPraias = bd.getPraiasListar();
+
+        adap  = new ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, listaPraias){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent){
+                View view = super.getView(position, convertView, parent);
+                TextView text1 = view.findViewById(android.R.id.text1);
+                TextView text2 = view.findViewById(android.R.id.text2);
+
+                text1.setText(listaPraias.get(position)[0]);
+                text2.setText(listaPraias.get(position)[1]);
+                return view;
+            }
+        };
+
+        list.setAdapter(adap);
+    }
+
 
     @Override
     public void onResume(){
         super.onResume();
         bd.open();
-        listaPraiasListar = listarBD();
+        setAdap();
         list.setAdapter(adap);
-
     }
     @Override
     public void onPause(){
@@ -158,19 +153,22 @@ public class Main2Activity extends AppCompatActivity {
         startActivity(y);
     }
 
-
-
-    public ArrayList listarBD(){
-        if (bd.getSize() > 0) {
-            return bd.getPraiasListar();
-        }
-        else{
-            Toast.makeText(this, "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
-            return null;
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+        return true;
     }
 
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.bAdicionarPraias) {
+            Intent main1Intent = new Intent(this,MainActivity.class);
+            startActivity(main1Intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }
