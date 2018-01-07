@@ -18,7 +18,6 @@ public class Praia {
 
     public Praia(int id) {
         praiaId = id;
-
     }
 
     public void setId(int id) {
@@ -72,6 +71,4 @@ public class Praia {
             return this.getNomePraia() + "\n" + this.getCondicaoActual();
         }
     }
-
-
 }

@@ -37,6 +37,9 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
         list = findViewById(android.R.id.list);
+        bActualizarPraias = findViewById(R.id.bActualizarPraias);
+        bAdicionarPraias = findViewById(R.id.bAdicionarPraias);
+
         list.setOnItemClickListener(
                 new AdapterView.OnItemClickListener()
                 {
@@ -44,34 +47,24 @@ public class Main2Activity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> arg0, View view,
                                             int position, long id) {
                         Object o = list.getItemAtPosition(position);
-//                        ecraDetalhes(Main3Activity.class, listaPraiasListar.get(position).getUrlPraia());
-                    }
-                }
-        );
-        bActualizarPraias = findViewById(R.id.bActualizarPraias);
-        bAdicionarPraias = findViewById(R.id.bAdicionarPraias);
+                        ecraDetalhes(Main3Activity.class, (listaPraias.get(position)[2]));
+                    }});
+
         bd = new AdaptadorBaseDados(this).open();
 
         setAdap();
-
-
 
         bActualizarPraias.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 updateCondicoes();
-
-            }
-        });
-
-
+            }});
     }
 
     @SuppressLint("StaticFieldLeak")
     private void updateCondicoes() {
 
         for (final String[] praia : listaPraias){
-
             new AsyncTask<String, Long , String[]>() {
 
                 @Override
@@ -79,27 +72,26 @@ public class Main2Activity extends AppCompatActivity {
                     praia[1] = "a carregar...";
                     list.setAdapter(adap);
                 }
-            @Override
-            protected String[] doInBackground(String... s) {
-                Document doc;
-                try {
-                    doc = Jsoup.connect(s[2]).get();
-                    s[1] = doc.select("div.classificationDescription").first().text();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                @Override
+                protected String[] doInBackground(String... s) {
+                    Document doc;
+                    try {
+                        doc = Jsoup.connect(s[2]).get();
+                        s[1] = doc.select("div.classificationDescription").first().text();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    return s;
                 }
 
-                return s;
-            }
-
-            @Override
-            protected void onPostExecute(String[] s) {
-                bd.updateCondicaoPraia(s);
-                list.setAdapter(adap);
-            }
-            }.execute(praia);
+                @Override
+                protected void onPostExecute(String[] s) {
+                    bd.updateCondicaoPraia(s);
+                    list.setAdapter(adap);
+                }
+                }.execute(praia);
         }
-
     }
 
     private void setAdap() {
@@ -165,5 +157,4 @@ public class Main2Activity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

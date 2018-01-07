@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +30,10 @@ import static com.example.user.surfstatus.Praia.listaPraiasListar;
 
 public class MainActivity extends ListActivity {
 
-    Button bActualizar;
+    FloatingActionButton bActualizar;
     ListView list;
-
     AdaptadorBaseDados bd;
-
     String urlListaPraias = "http://beachcam.meo.pt/reports/";
-
     ArrayList<String> arraylistPraias;
 
     @Override
@@ -46,10 +44,9 @@ public class MainActivity extends ListActivity {
         bd = new AdaptadorBaseDados(this).open();
 
         bActualizar = findViewById(R.id.bActualizar);
+
         list = getListView();
-
         ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
-
 
         bActualizar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,24 +56,14 @@ public class MainActivity extends ListActivity {
         });
 
         setListAdap();
-
-
-
     }
 
-    @Override
-    public void onListItemClick(ListView parent, View v, int position, long id) {
-        //TODO delete?
-    }
 
     protected void setListAdap(){
-//        arraylistPraias = new ArrayList<>(listaPraias.size());
         arraylistPraias = new ArrayList<>(bd.getSize());
 
         for(int i = 1; i < bd.getSize() + 1; ++i){
-//            arraylistPraias.add(listaPraias.get(i).getNomePraia());
             arraylistPraias.add(bd.getNomePraia(i));
-
         }
 
         ToggleButtonListAdapter adap = new ToggleButtonListAdapter(this, arraylistPraias);
@@ -117,12 +104,10 @@ public class MainActivity extends ListActivity {
         Praia.addPraias(listaPraiasTemp);
         actualizarBDPraias(listaPraiasTemp);
         setListAdap();
-
     }
 
     private void actualizarBDPraias(List<Praia> listaPraias) {
         bd.dropPraias();
-
         for (Praia praia : listaPraias){
             bd.inserirPraia(praia.getNomePraia(), praia.getUrlPraia());
         }
@@ -145,7 +130,6 @@ public class MainActivity extends ListActivity {
             View rowView = inflater.inflate(R.layout.layout_linhas, parent, false);
             TextView textView = rowView.findViewById(R.id.items);
             final Switch toggleButton =  rowView.findViewById(R.id.bMostrar);
-//            toggleButton.setChecked(bd.getListarPraia(position+1));
             toggleButton.setChecked(bd.getListarPraia(position+1));
 
             toggleButton.setOnClickListener(new View.OnClickListener() {
@@ -154,15 +138,9 @@ public class MainActivity extends ListActivity {
                 @Override
                 public void onClick(View v) {
                     if(toggleButton.isChecked()){
-//                        listaPraias.get(position).setListar(true);
-//                        listaPraiasListar.add(listaPraias.get(position));
-
                         bd.updateListar(bd.getNomePraia(position+1), 1);
                     }
                     else{
-//                        listaPraias.get(position).setListar(false);
-//                        listaPraiasListar.remove(listaPraias.get(position));
-
                         bd.updateListar(bd.getNomePraia(position+1), 0);
                     }
                 }
@@ -173,8 +151,17 @@ public class MainActivity extends ListActivity {
             return rowView;
         }
     }
+    @Override
+    public void onPause(){
+        super.onPause();
+        bd.close();
+    }
 
-
+    @Override
+    public void onStop(){
+        super.onStop();
+        bd.close();
+    }
 }
 
 
