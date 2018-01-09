@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -57,8 +58,15 @@ public class Main2Activity extends AppCompatActivity {
         bActualizarPraias.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(bd.getPraiasListar().size() == 0){
+                    Toast.makeText(getApplicationContext(), "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
+                }
                 updateCondicoes();
             }});
+
+        if(bd.getPraiasListar().size() == 0){
+            Toast.makeText(this, "nao tem praias adicionadas", Toast.LENGTH_LONG).show();
+        }
     }
 
     @SuppressLint("StaticFieldLeak")

@@ -31,7 +31,7 @@ public class AdaptadorBaseDados {
 
     public void dropPraias(){
         database.execSQL("DROP TABLE IF EXISTS praias");
-        database.execSQL("CREATE TABLE praias(_id integer primary key autoincrement, nomePraia varchar(40) unique, condicaoActual varchar(40), url varchar(60), listar bit default 0)");
+        database.execSQL("CREATE TABLE praias(_id integer primary key autoincrement, nomePraia varchar(40) unique, condicaoActual varchar(40) default '-', url varchar(60), listar bit default 0)");
 
     }
 

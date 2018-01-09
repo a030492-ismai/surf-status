@@ -3,6 +3,7 @@ package com.example.user.surfstatus;
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -46,7 +47,8 @@ public class MainActivity extends ListActivity {
         bActualizar = findViewById(R.id.bActualizar);
 
         list = getListView();
-        ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
+
+//        ArrayList<String> arraylistPraias = new ArrayList<>(listaPraias.size());
 
         bActualizar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +58,9 @@ public class MainActivity extends ListActivity {
         });
 
         setListAdap();
+        if(bd.getPraiasListar().size() == 0){
+            actualizarListaPraias();
+        }
     }
 
 
@@ -72,8 +77,9 @@ public class MainActivity extends ListActivity {
 
     @SuppressLint("StaticFieldLeak")
     public void actualizarListaPraias() {
-
+        Toast.makeText(this, "a actualizar lista de praias...", Toast.LENGTH_LONG).show();
             new AsyncTask<String, Void, Document>() {
+
                 @Override
                 protected Document doInBackground(String... s) {
                     Document fulldoc = null;
@@ -104,6 +110,7 @@ public class MainActivity extends ListActivity {
         Praia.addPraias(listaPraiasTemp);
         actualizarBDPraias(listaPraiasTemp);
         setListAdap();
+        Toast.makeText(this, "lista de praias actualizada", Toast.LENGTH_LONG).show();
     }
 
     private void actualizarBDPraias(List<Praia> listaPraias) {
@@ -129,6 +136,7 @@ public class MainActivity extends ListActivity {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.layout_linhas, parent, false);
             TextView textView = rowView.findViewById(R.id.items);
+            textView.setTextColor(Color.WHITE);
             final Switch toggleButton =  rowView.findViewById(R.id.bMostrar);
             toggleButton.setChecked(bd.getListarPraia(position+1));
 
