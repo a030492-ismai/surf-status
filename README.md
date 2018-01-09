@@ -10,5 +10,5 @@ Aplicacao Android para, numa unica vista, ver o estado de varias praias a partir
 ## Funcionalidades
 Necessita de interpretar o HTML para seleccionar apenas o nome, ou outras informacoes, assim como o estado actual da praia.
 Na base de dados local sera armazenado o estado da praia ao ser consultado.
-A partir do ecra principal (praias favoritas), ao clicar numa praia sera apresentado a descricao das condicoes.
+A partir do ecra principal (praias favoritas), ao clicar numa praia sera apresentada a descricao das condicoes.
 
