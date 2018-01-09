@@ -8,6 +8,7 @@ Aplicacao Android para, numa unica vista, ver o estado de varias praias a partir
 * [lista completa](http://beachcam.meo.pt/reports/) 
 
 ## Funcionalidades
-Necessita de interpretar o HTML para selecionar apenas o nome, ou outras informacoes, assim como o estado actual da praia.
+Necessita de interpretar o HTML para seleccionar apenas o nome, ou outras informacoes, assim como o estado actual da praia.
 Na base de dados local sera armazenado o estado da praia ao ser consultado.
+A partir do ecra principal (praias favoritas), ao clicar numa praia sera apresentado a descricao das condicoes.
 
